@@ -1,7 +1,6 @@
 package com.lovejoy777.showcase;
 
 import android.app.ActivityOptions;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.ParseException;
 import android.os.AsyncTask;
@@ -37,7 +36,7 @@ import java.util.Random;
 /**
  * Created by lovejoy777 on 24/06/15.
  */
-public class Screen1Paid extends AppCompatActivity {
+public class Screen1Donate extends AppCompatActivity {
     //private final TextView ThemeName;
     //private final TextView ThemeDeveloper;
     private RecyclerView mRecyclerView;
@@ -54,10 +53,9 @@ public class Screen1Paid extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_action_back);
         setSupportActionBar(toolbar);
-
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        themesList = new ArrayList<Themes>();
 
+        themesList = new ArrayList<Themes>();
         new JSONAsyncTask().execute("https://raw.githubusercontent.com/LayersManager/layers_showcase_json/master/showcase.json");
 
         mRecyclerView = (RecyclerView)findViewById(R.id.cardList);
@@ -65,11 +63,10 @@ public class Screen1Paid extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mAdapter = new CardViewAdapter(themesList, R.layout.adapter_card_layout, this);
-
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(Screen1Paid.this, new RecyclerItemClickListener.OnItemClickListener() {
+                new RecyclerItemClickListener(Screen1Donate.this, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         String title = themesList.get(position).gettitle();
@@ -83,7 +80,7 @@ public class Screen1Paid extends AppCompatActivity {
                         String description = themesList.get(position).getdescription();
 
 
-                        Intent Infoactivity = new Intent(Screen1Paid.this, Details.class);
+                        Intent Infoactivity = new Intent(Screen1Donate.this, Details.class);
 
                         Infoactivity.putExtra("keytitle", title);
                         Infoactivity.putExtra("keylink", link);
@@ -101,7 +98,6 @@ public class Screen1Paid extends AppCompatActivity {
                     }
                 })
         );
-
         //initialize swipetorefresh
 
         mSwipeRefresh.setColorSchemeResources(R.color.accent,R.color.primary);
@@ -115,12 +111,12 @@ public class Screen1Paid extends AppCompatActivity {
             void onItemsLoadComplete(){
             }
         });
-
     }
 
 
 
     class JSONAsyncTask extends AsyncTask<String, Void, Boolean> {
+
 
 
         @Override
@@ -202,7 +198,7 @@ public class Screen1Paid extends AppCompatActivity {
                         theme.setdonate(object.getString("donate"));
                         theme.setpaid(object.getString("paid"));
 
-                        if (theme.getpaid().contains("true")) {
+                        if (theme.getdonate().contains("true")) {
                             themesList.add(theme);
                         }
                     }
@@ -223,8 +219,10 @@ public class Screen1Paid extends AppCompatActivity {
 
         protected void onPostExecute(Boolean result) {
             mAdapter.notifyDataSetChanged();
+            //ca.notifyDataSetChanged();
             if(result == false)
                 Toast.makeText(getApplicationContext(), "Unable to fetch data from server", Toast.LENGTH_LONG).show();
+            System.out.println(themesList.size());
             mSwipeRefresh.post(new Runnable() {
                 @Override
                 public void run() {
